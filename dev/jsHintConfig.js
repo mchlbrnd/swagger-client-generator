@@ -60,6 +60,8 @@ module.exports = {
   // Prohibit use of a variable before it is defined.
   latedef: false,
 
+  curly: false,
+
   globals: {
     // Jasmine Globals
     beforeEach: true,
