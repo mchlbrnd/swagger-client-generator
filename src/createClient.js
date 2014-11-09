@@ -8,7 +8,7 @@ function createClient(schema, requestHandler){
     authMethodName = 'auth';
 
   schema = processSchema(schema);
-  
+
   // If the 'auth' key is used for any resource or operation, we'll use
   // 'authorization' instead for the auth methods
   var authIsInUse = schema.apis.some(function(resourceObject){
@@ -20,7 +20,7 @@ function createClient(schema, requestHandler){
       });
     });
   });
-  
+
   if(authIsInUse) authMethodName = 'authorization';
 
   api[authMethodName] = function(){
@@ -40,7 +40,7 @@ function createClient(schema, requestHandler){
       };
     }
 
-    resourceObject.apiDeclaration.apis.forEach(function(apiObject){
+    (resourceObject.apiDeclaration.apis || []).forEach(function(apiObject){
       var apiObjectName = resourceName,
         apiObjectApi = resourceApi,
         apiObjectAuthData;
@@ -53,11 +53,11 @@ function createClient(schema, requestHandler){
         };
       }
 
-      apiObject.operations.forEach(function(operation){
+      (apiObject.operations || []).forEach(function(operation){
         var operationHandlerName = operation.nickname,
           operationAuthData,
-          operationHandler; 
-        
+          operationHandler;
+
         function getAuthData(){
           return operationAuthData || apiObjectAuthData || resourceAuthData || apiAuthData;
         }
