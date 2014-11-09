@@ -95,14 +95,14 @@ function processSchema(schema){
   schema.apis.forEach(function(resourceObject){
     resourceObject.resourceListing = schema;
 
-    resourceObject.apiDeclaration.apis.forEach(function(apiObject){
+    (resourceObject.apiDeclaration.apis || []).forEach(function(apiObject){
       apiObject.resourceObject = resourceObject;
       apiObject.apiDeclaration = resourceObject.apiDeclaration;
 
-      apiObject.operations.forEach(function(operation){
+      (apiObject.operations || []).forEach(function(operation){
         operation.apiObject = apiObject;
 
-        operation.parameters.forEach(function(parameter){
+        (operation.parameters || []).forEach(function(parameter){
           parameter.operation = operation;
         });
       });
