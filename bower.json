@@ -26,7 +26,6 @@
     "bower_components",
     "example",
     "src",
-    "build",
     "dev",
     "index.js",
     "package.json",
