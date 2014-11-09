@@ -96,7 +96,7 @@ function prune(data){
 // Enables data to be passed directly for single param operations.
 function singleParamConvenienceProcessor(operation, data){
   // If there are more than one params, bail
-  var requiredParams = operation.parameters.filter(function(param){
+  var requiredParams = (operation.parameters || []).filter(function(param){
     return param.required;
   });
 
@@ -104,7 +104,7 @@ function singleParamConvenienceProcessor(operation, data){
   // and there are many optional params, bail
   if(requiredParams.length > 1) return data;
 
-  if(requiredParams.length !== 1 && operation.parameters.length !== 1) return data;
+  if(requiredParams.length !== 1 && (operation.parameters || []).length !== 1) return data;
 
   var param = requiredParams[0] || operation.parameters[0];
 

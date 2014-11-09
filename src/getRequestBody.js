@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function getRequestBody(operation, data, headers){
-  var body = operation.parameters.filter(function(param){
+  var body = (operation.parameters || []).filter(function(param){
     return param.paramType === 'body' && data[param.name] != null;
   }).map(function(param){
     return data[param.name];
@@ -10,7 +10,7 @@ module.exports = function getRequestBody(operation, data, headers){
   if(!(headers &&  headers['Content-Type'])) return body;
 
   var contentType = headers['Content-Type'];
-  var presentFormParams = operation.parameters.filter(function(param){
+  var presentFormParams = (operation.parameters || []).filter(function(param){
     return param.paramType === 'form' && data[param.name] != null;
   });
 
@@ -23,14 +23,14 @@ module.exports = function getRequestBody(operation, data, headers){
   } else if(contentType.indexOf('multipart/form-data') !== -1){
     var randomness = Math.random().toString(16).substr(2);
     var boundary = 'SwaggerBoundary' + randomness;
-    
+
     body = presentFormParams.map(function(param){
       var key = param.name,
         value = data[key],
         result = '--' + boundary;
 
       result += '\nContent-Disposition: form-data; name="' + key + '"';
-      
+
       if(value.contentType){
         if(value.name){
           result += '; filename="' + value.name + '"';
@@ -53,9 +53,9 @@ module.exports = function getRequestBody(operation, data, headers){
     }).join('\n');
 
     body += '\n--' + boundary + '--\n';
-    
+
     headers['Content-Type'] = contentType.replace(
-      'multipart/form-data', 
+      'multipart/form-data',
       'multipart/form-data; boundary=' + boundary
     );
   } else if(contentType.indexOf('application/json') !== -1){

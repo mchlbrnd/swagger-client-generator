@@ -10,7 +10,7 @@ module.exports = function getRequestUrl(operation, data){
 
   if(!data) return url;
 
-  var queryParams = operation.parameters.filter(function(param){
+  var queryParams = (operation.parameters || []).filter(function(param){
     return param.paramType === 'query' && data[param.name] !== undefined;
   }).map(function(param){
     var key = param.name;
@@ -23,7 +23,7 @@ module.exports = function getRequestUrl(operation, data){
 };
 
 function applyPathParams(url, operation, data){
-  var pathParams = operation.parameters.filter(function(param){
+  var pathParams = (operation.parameters || []).filter(function(param){
     return param.paramType === 'path';
   });
 
@@ -39,7 +39,7 @@ function applyPathParams(url, operation, data){
 
   pathParams.forEach(function(param){
     var key = param.name;
-    
+
     var exp = new RegExp('{' + key + '[^}]*}', 'gi');
 
     var value = data[key].toString();
@@ -53,10 +53,10 @@ function applyPathParams(url, operation, data){
 }
 
 function getUrlTemplate(operation){
-  var apiObject = operation.apiObject; 
+  var apiObject = operation.apiObject;
 
   var basePath = apiObject.apiDeclaration.basePath;
   var path = apiObject.path.replace('{format}', 'json');
-  
+
   return basePath + path;
 }
