@@ -42,6 +42,6 @@
   },
   "homepage": "https://github.com/signalfx/swagger-client-generator",
   "dependencies": {
-    "swagger-validate": "^0.1.1"
+    "swagger-validate": "git://github.com/mchlbrnd/swagger-validate.git#master"
   }
 }
