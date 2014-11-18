@@ -15,7 +15,7 @@ function createClient(schema, requestHandler){
     return resourceObject.apiDeclaration.apis.some(function(apiObject){
       var resourceApiName = getApiName(apiObject.apiDeclaration.resourcePath || apiObject.path);
       if(resourceApiName === 'auth') return true;
-      return apiObject.operations.some(function(operation){
+      return (apiObject.operations || []).some(function(operation){
         return operation.nickname === 'auth';
       });
     });
