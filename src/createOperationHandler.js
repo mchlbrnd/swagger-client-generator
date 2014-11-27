@@ -42,8 +42,7 @@ function createOperationHandler(operation, getAuthData, requestHandler){
     try{
       data = prune(data);
       data = singleParamConvenienceProcessor(operation, data);
-      data = removeUnknownParams(operation, data);
-
+      //data = removeUnknownParams(operation, data);
       error = swaggerValidate.operation(data, operation, operation.apiObject.apiDeclaration.models);
 
       request = new Request(data, options);
@@ -136,6 +135,8 @@ function singleParamConvenienceProcessor(operation, data){
 function removeUnknownParams(operation, data){
   if(!data || typeof data !== 'object') return data;
 
+  console.log('before rm', data);
+
   var paramNames = {};
   (operation.parameters || []).forEach(function(param){
     paramNames[param.name] = true;
@@ -151,6 +152,8 @@ function removeUnknownParams(operation, data){
   unknownKeys.forEach(function(key){
     delete data[key];
   });
+
+  console.log('after rm', data);
 
   return data;
 }

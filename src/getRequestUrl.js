@@ -5,22 +5,50 @@ var errorTypes = require('./errorTypes'),
 
 module.exports = function getRequestUrl(operation, data){
   var url = getUrlTemplate(operation);
-
   url = applyPathParams(url, operation, data);
 
   if(!data) return url;
+  delete data.body;
+  var queryParams = (operation.parameters || []).concat(Object.keys(data))
+    .filter(function(param) {
+      if(param.paramType === 'query')
+        return data[param.name] !== undefined;
+      else if(data[param]) {
+        return data[param] !== undefined;
+      }
+    })
+    .map(function(param) {
+      var key = param.name || param;
 
-  var queryParams = (operation.parameters || []).filter(function(param){
-    return param.paramType === 'query' && data[param.name] !== undefined;
-  }).map(function(param){
-    var key = param.name;
-    return encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
-  }).join('&');
+      if(Array.isArray(data[key])) {
+        return data[key].map(function(value) {
+          return encodeURIComponent(key) + '=' + encodeURIComponent(value);
+        }).join('&');
+      }
+      return encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
+    }).join('&');
 
   if(queryParams) url += '?' + queryParams;
 
   return url;
 };
+
+/*function applyQueryParams(url, params) {
+  if(params === {}) return url;
+  return url +
+    (url.indexOf('?') === -1 ? '?' : '&') +
+    Object.keys(params)
+    .map(function(key) {
+      if(Array.isArray(params[key])) {
+        return params[key]
+          .map(function(value) {
+            return encodeURIComponent(key) + '=' + encodeURIComponent(value);
+          }).join('&');
+      }else {
+        return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+      }
+    });
+}*/
 
 function applyPathParams(url, operation, data){
   var pathParams = (operation.parameters || []).filter(function(param){
